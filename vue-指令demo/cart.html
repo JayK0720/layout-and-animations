@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>京东购物车</title>
+    <style>
+        body,ul,p,input,button{
+            padding:0;
+            margin:0;
+        }
+        input,button{
+            outline:none;
+            border:none;
+        }
+        ul{
+            list-style:none;
+        }
+        #app{
+            margin:auto;
+            width:990px;
+            height:500px;
+            user-select:none;
+        }
+        .cart-title{
+            color:#ee0000;
+        }
+        .cart-head{
+            display:flex;
+            width:988px;
+            height:42px;
+            line-height:42px;
+            background-color:#f3f3f3;
+            color:#8a8a8a;
+            font-size:14px;
+            border:1px solid #e9e9e9;
+        }
+        .cart-head .select{
+            width:132px;
+        }
+        .cart-head .good{
+            width:390px;
+        }
+        .cart-head .price,.main .price{
+            width:180px;
+        }
+        .cart-head .count{
+            width:176px;
+        }
+        .cart-head .totalPrice{
+            width:64px;
+        }
+        .cart-head .operate{
+            flex:0 0 1;
+        }
+        .main{
+            padding-bottom:50px;
+            margin-top:10px;
+            border-width:2px 1px 1px 1px;
+            border-style:solid;
+            border-color:#aaa #f1f1f1 #f1f1f1;
+        }
+        .product-item{
+            display:flex;
+            padding:15px 0 21px 0;
+            border-bottom:1px solid #f1f1f1;
+        }
+        .product-item.current{
+            background-color:#fff4e7;
+        }
+        .good-select{
+            width:40px;
+        }
+        .good-item{
+            display:flex;
+            width:480px;
+            flex:0 0 480px;
+        }
+        .good-item .book-icon{
+            width:80px;
+            height:80px;
+            border:1px solid #f1f1f1;
+            background-color:#fff;
+            text-align:center;
+        }
+        .good-item .book-name{
+            font-size:14px;
+            padding-left:8px;
+            color:#505050;
+        }
+        .product-item .price{
+            color:#333;
+            font-size:13px;
+        }
+        .product-item .button{
+            display:flex;
+            width:78px;
+            height:20px;
+            border:1px solid #cacbcb;
+        }
+        .button input{
+            width:44px;
+            height:100%;
+            text-align:center;
+        }
+        .button .reduce-btn,.button .add-btn{
+            width:16px;
+            height:20px;
+            text-aling:center;
+        }
+        .button .reduce-btn{
+            border-right:1px solid #cacbcb;
+        }
+        .button .add-btn{
+            border-left:1px solid #cacbcb;
+        }
+        .single-price{
+            width:125px;
+            text-align:right;
+            font-size:13px;
+            color:#333;
+        }
+        .remove{
+            flex:1;
+            font-size:14px;
+            text-align:center;
+        }
+        .remove button{
+            width:50px;
+            height:28px;
+            background-color:#ff5e61;
+            color:#fff;
+        }
+        .bottom-area{
+            position:fixed;
+            bottom:0;
+            left:0;
+            right:0;
+            height:50px;
+            background-color:white;
+            box-shadow:0 -1px 3px 3px #f1f1f1;
+        }
+        .bottom-area .pay{
+            position:absolute;
+            right:0;
+            top:0;
+            width:94px;
+            height:50px;
+            background-color:#f72634;
+            color:#fff;
+            font-weight:bold;
+            font-size:18px;
+            text-align:center;
+            line-height:50px;
+        }
+        .bottom-area>section{
+            margin:0 auto;
+            position:relative;
+            height:50px;
+            width:990px;
+        }
+        .bottom-area .total{
+            font-size:14px;
+            color:#b1b1b1;
+        }
+        .bottom-area .total-price,.bottom-area .total-count{
+            color:#f20000;
+            line-height:50px;
+            font-weight:bold;
+            font-style:normal;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1 class="cart-title">京东购物车</h1>
+    <div class="cart-head">
+        <div class="select">
+            <input type="checkbox" v-model="checkAll" @change="handleSelectAll">
+            <span>全选</span>
+        </div>
+        <div class="good">商品</div>
+        <div class="price">单价</div>
+        <div class="count">数量</div>
+        <div class="totalPrice">小计</div>
+        <div class="operate">操作</div>
+    </div>
+    <div class="main">
+        <ul class="product-list">
+            <li
+                v-for="(product,index) in products"
+                :key="index"
+                class="product-item"
+                :class="{current:product.isSelected}"
+            >
+                <div class="good-select">
+                    <input type="checkbox" v-model="product.isSelected" @change="selectedSingle">
+                </div>
+                <div class="good-item">
+                    <div class="book-icon">
+                        <img :src="product.imgUrl" :alt="product.bookName" >
+                    </div>
+                    <p class="book-name">{{product.bookName}}</p>
+                </div>
+                <p class="price">{{product.price | filterPrice(2) }}</p>
+                <div class="button">
+                    <button class="reduce-btn" @click="changeGood(index,-1)">-</button>
+                    <input type="text" v-model.number="product.count" disabled>
+                    <button class="add-btn" @click="changeGood(index,1)">+</button>
+                </div>
+                <div class="single-price">{{product.price * product.count | filterPrice(2)}}</div>
+                <div class="remove" @click="handleRemove(index)">
+                    <button>删除</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="bottom-area">
+        <section>
+            <p class="total">
+                <span>已选择 <em class="total-count">{{totalCount}}</em> 件商品</span>
+                <span>总价：<em class="total-price">{{totalPrice | filterPrice(2)}}</em></span>
+            </p>
+            <div class="pay">去结算</div>
+        </section>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    const vm = new Vue({
+        el:'#app',
+        data:{
+            products:[
+                {
+                    imgUrl:'https://img10.360buyimg.com/cms/s80x80_jfs/t1/83646/28/5861/207307/5d3fde81Ea8f805a1/8c564f5b56f32bda.jpg',
+                    bookName:'种子的信仰',
+                    price:64.6,
+                    isSelected:true,
+                    count:1
+                },
+                {
+                    imgUrl:'https://img10.360buyimg.com/cms/s80x80_jfs/t18475/348/516582700/1740662/3f4cd8b7/5a92859cN09c786d0.jpg',
+                    bookName:'橘子不是唯一的水果',
+                    price:48.5,
+                    isSelected:false,
+                    count:1
+                },
+                {
+                    imgUrl:'https://img10.360buyimg.com/cms/s80x80_jfs/t1/3299/33/9499/3222032/5baca5c1Ec16b89ed/247fefe8dfafefcf.jpg',
+                    bookName:'三岛由纪夫：金阁寺',
+                    price:49.5,
+                    isSelected:false,
+                    count:1
+                },
+                {
+                    imgUrl:'https://img10.360buyimg.com/cms/s80x80_jfs/t15838/263/719708457/296056/f75f7309/5a3b55baN3a18f8f7.jpg',
+                    bookName:'红楼梦(无删节脂本精校)',
+                    price:87.1,
+                    isSelected:false,
+                    count:1
+                },
+                {
+                    imgUrl:'https://img10.360buyimg.com/cms/s80x80_jfs/t1/22851/11/13998/968869/5ca45dfeEee948007/972c689f177c2659.jpg',
+                    bookName:'牛津通识读本：现代日本（新版）',
+                    price:30.8,
+                    isSelected:false,
+                    count:1
+                }
+            ],
+            checkAll:false
+        },
+        filters:{
+            filterPrice(value,num){
+                return '$' + value.toFixed(num);
+            }
+        },
+        computed:{
+            totalPrice(){
+                return this.products.reduce((accumulator,currentValue) => {
+                    if(currentValue.isSelected){
+                        accumulator += currentValue.count * currentValue.price;
+                    }
+                    return accumulator;
+                },0)
+            },
+            totalCount(){
+                return this.products.reduce((accumulator,currentValue) => {
+                    if(currentValue.isSelected){
+                        accumulator += currentValue.count;
+                    }
+                    return accumulator;
+                },0)
+            }
+        },
+        methods:{
+            changeGood(index,num){
+                this.products[index].isSelected = true;
+                if(num < 0 && this.products[index].count === 1){
+                    return;
+                }
+                this.products[index].count += num;
+            },
+            handleSelectAll(){
+                console.log(this.checkAll);
+                this.products.forEach((product) => {
+                    product.isSelected = this.checkAll;
+                })
+            },
+            selectedSingle(){
+                this.checkAll = this.products.every(product => {
+                    return product.isSelected === true;
+                })
+            },
+            handleRemove(index){
+                this.products.splice(index,1);
+            }
+        }
+
+    })
+</script>
+</body>
+</html>
