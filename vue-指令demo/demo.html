@@ -25,14 +25,14 @@
 <body>
 <div id="app">
     <input
-        type="text"
-        v-model="msg"
-        placeholder="请输入下方球员姓名"
+            type="text"
+            v-model="msg"
+            placeholder="请输入下方球员姓名"
     >
     <ol class="list">
         <li
-            v-for="(player,index) in filterPlayers"
-            :key="index"
+                v-for="(player,index) in filterPlayers"
+                :key="index"
         >
             <span class="name">name: {{player.name}} </span>
             ---
@@ -64,14 +64,14 @@
             }
         },
         methods:{
-        /*
-            通过filterPlayer也可以过滤数组,但是通过计算属性可以实时计算,并且计算属性是通过相关依赖缓存的
-            不会像methods一样视图更新就会重新计算
-            filterPlayer(){
-                this.players = this.players.filter((player) => {
-                    return player.name.includes(this.msg);
-                });
-            }*/
+            /*
+                通过filterPlayer也可以过滤数组,但是通过计算属性可以实时计算,并且计算属性是通过相关依赖缓存的
+                不会像methods一样视图更新就会重新计算
+                filterPlayer(){
+                    this.players = this.players.filter((player) => {
+                        return player.name.includes(this.msg);
+                    });
+                }*/
             sortByAge(num){
                 if(num){
                     this.players.sort((a,b) => {

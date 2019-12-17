@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue-弹窗效果</title>
+    <style>
+        body,ul,ol,p{
+            padding: 0;
+            margin: 0;
+        }
+        .wrapper{
+            position:fixed;
+            width:100%;
+            height:100%;
+            left:0;
+            top:0;
+            background-color:rgba(0,0,0,.3);
+        }
+        .wrapper .content{
+            position:absolute;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            margin:auto;
+            width:500px;
+            height:300px;
+            background-color:white;
+        }
+        .content .text{
+            padding:30px 15px 0 15px;
+            font-size:14px;
+            line-height:40px;
+        }
+        .close{
+            position:absolute;
+            width:30px;
+            height:30px;
+            right:0;
+            top:0;
+            background-color:#f00;
+            border-radius:50%;
+            text-align:center;
+            line-height:30px;
+            color:#fff;
+        }
+        .close{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input
+        type="submit"
+        value="点击"
+        class="submit"
+        @click="fn"
+    />
+    <box v-show="flag" @close="handleClose"/>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    const box = {
+        template:`<div class="wrapper">
+           <div class="content">
+                <p class="text">Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，
+                不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
+                <div class="close" @click="close">X</div>
+            </div>
+        </div>`,
+        methods:{
+            close(){
+                this.$emit('close',false);
+            }
+        }
+    }
+    const vm = new Vue({
+        el:'#app',
+        data:{
+            flag:false
+        },
+        components:{box},
+        methods:{
+            fn(){
+                this.flag = true;
+            },
+            handleClose(msg){
+                this.flag = msg;
+            }
+        }
+    })
+</script>
+</body>
+</html>
