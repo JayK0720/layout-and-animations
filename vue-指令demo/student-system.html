@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue-Student/System</title>
+    <style>
+        body,ul,ol,p,table,input{
+            padding: 0;
+            margin: 0;
+        }
+        #app{
+            width:600px;
+            margin:30px auto 0;
+            color:#333;
+        }
+        .username .text,.phone .text{
+            font-size:14px;
+            line-height:40px;
+        }
+        .username input,.phone input{
+            width:600px;
+            height:28px;
+            border:1px solid #ccc;
+            border-radius:4px;
+            text-indent:1em;
+        }
+        .submit{
+            height:50px;
+            line-height:50px;
+        }
+        .table-wrapper{
+            padding-top:30px;
+        }
+        .table-wrapper table{
+            width:600px;
+            border-collapse:collapse;
+        }
+        .table-wrapper tr{
+            height:40px;
+            border-bottom:1px solid #ccc;
+            font-size:14px;
+        }
+        .table-wrapper tr:last-child{
+            border-bottom:1px solid transparent;
+        }
+        .table-wrapper tr:nth-of-type(1){
+            border-top:1px solid #ccc;
+        }
+        .table-wrapper th{
+            height:50px;
+            vertical-align:middle;
+            text-align:left;
+        }
+        .table-wrapper tr td:last-child{
+            text-align:center;
+        }
+        .dialog-wrapper{
+            position:fixed;
+            width:100%;
+            height:100%;
+            left:0;
+            top:0;
+            background-color:rgba(0,0,0,.1);
+        }
+        .content{
+            position:relative;
+            padding:10px 0;
+            width:500px;
+            height:80px;
+            background-color:#fff;
+            margin:80px auto 0;
+            border-radius:6px;
+        }
+        .content .text{
+            font-size:14px;
+            text-align:center;
+            line-height:40px;
+            height:40px;
+            border-bottom:1px solid #ccc;
+        }
+        .content .button{
+            position:absolute;
+            right:10px;
+            bottom:10px;
+        }
+        .content button{
+            outline:none;
+            border-radius:4px;
+            border:1px solid #ccc;
+        }
+        .content .cancel{
+            backgorund-color:#fff;
+        }
+        .content .confirm{
+            background-color:#3185c5;
+            color:#fff;
+        }
+        .box-wrapper{
+            position:fixed;
+            top:0;
+            left:50%;
+            transform:translateX(-50%);
+            width:300px;
+            height:40px;
+            line-height:40px;
+            font-size:14px;
+            text-align:center;
+            background-color:indianred;
+            border-radius:4px;
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <box v-show="isShow"></box>
+    <info @add="handleAdd" @show="show"></info>
+    <table-list :students="students" @remove="remove"></table-list>
+    <masker v-show="flag" @cancel="cancel" @confirm="confirm"/>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    const info = {
+        template:`<div class="student-wrapper">
+            <div class="username">
+                <p class="text">学生姓名</p>
+                <input type="text" placeholder="请输入姓名" v-model="username" required>
+            </div>
+            <div class="phone">
+                <p class="text">联系电话</p>
+                <input type="text" placeholder="请输入联系电话" v-model="phone" required>
+            </div>
+            <p class="submit"><input type="submit" value="添加" @click="add"></p>
+        </div>`,
+        data() {
+            return {
+                username:'',
+                phone:'',
+            }
+        },
+        methods:{
+            add(){
+                if(!this.username || !this.phone){
+                    this.$emit('show')
+                }else{
+                    this.$emit('add',this.username,this.phone);
+                    this.username = '';
+                    this.phone = ''
+                }
+            }
+        }
+    }
+
+    const tableList = {
+        template:`<div class="table-wrapper" v-show="students.length">
+            <table>
+                <th>学生信息表</th>
+                <tbody>
+                    <tr>
+                        <td class="select">选择</td>
+                        <td class="username">姓名</td>
+                        <td class="phone">联系方式</td>
+                        <td class="remove">删除</td>
+                    </tr>
+                    <tr v-for="(student,index) in students" :key="index">
+                        <td>
+                            <input type="checkbox" v-model="student.isSelected">
+                        </td>
+                        <td>{{student.username}}</td>
+                        <td>{{student.phone}}</td>
+                        <td>
+                            <img src="./close.png" alt="close" width="20" height="20" @click="remove(index)">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`,
+        props:{
+            students:{
+                type:Array,
+                default:function(){
+                    return []
+                }
+            }
+        },
+        methods:{
+            remove(index){
+                this.$emit('remove',index);
+            }
+        }
+    }
+
+    const masker = {
+        template:`<div class="dialog-wrapper">
+            <div class="content">
+                <p class="text">确实要删除该生信息吗?</p>
+                <div class="button">
+                    <button class="cancel" @click="cancel">取消</button>
+                    <button class="confirm" @click="confirm">确定</button>
+                </div>
+            </div>
+        </div>`,
+        methods:{
+            confirm(){
+                this.$emit('confirm');
+            },
+            cancel(){
+                this.$emit('cancel');
+            }
+        }
+    }
+
+    const box = {
+        template:`<div class="box-wrapper">
+            <p class="text">姓名或电话不能为空</p>
+         </div>`,
+    }
+
+    const vm = new Vue({
+        el:'#app',
+        data:{
+            students:[],
+            flag:false,
+            num:0,
+            isShow:false
+        },
+        components:{info,tableList,masker,box},
+        created(){
+            this.students = JSON.parse(window.localStorage.getItem('student')) || [];
+        },
+        watch:{
+            students:{
+                handler:function(){
+                    window.localStorage.setItem('student',JSON.stringify(this.students));
+                },
+                deep:true
+            }
+        },
+        methods:{
+            handleAdd(username,phone){
+                this.students.push({
+                    username,
+                    phone,
+                    isSelected:false
+                })
+            },
+            /*点击删除的时候 获取点击的是第几条信息,并保存下来*/
+            remove(index){
+                this.flag = true;
+                this.num = index;
+            },
+            cancel(){
+                this.flag = false;
+            },
+            confirm(){
+                this.students.splice(this.num,1);
+                this.flag = false;
+            },
+            show(){
+                this.isShow = true;
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => {
+                    this.isShow = false;
+                },1500);
+            }
+        },
+    })
+</script>
+</body>
+</html>
