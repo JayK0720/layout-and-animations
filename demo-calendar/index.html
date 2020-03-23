@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>万年历</title>
+    <style>
+        body,table{
+            padding: 0;
+            margin: 0;
+        }
+        table{
+            border-collapse:collapse;
+        }
+        .calendar-wrapper{
+            margin:20px auto;
+            width:420px;
+            height:360px;
+            border:1px solid #00a0dc;
+            border-radius:5px;
+        }
+        .title{
+            text-align:center;
+        }
+        .top{
+            padding:0 25px;
+            display:flex;
+            height:42px;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom:1px solid #e7ffff;
+        }
+        .top #year,.top #month{
+            width:100px;
+        }
+        .top input[type='submit']{
+            width:60px;
+        }
+        .calendar-table{
+            width:420px;
+        }
+        .calendar-table .week{
+            height:40px;
+            text-align:center;
+        }
+        tbody tr{
+            height:40px;
+            text-align:center;
+        }
+        tbody tr>td:first-child{
+            color:#999;
+        }
+        tbody tr>td:last-child{
+            color:#999;
+        }
+    </style>
+</head>
+<body>
+<h3 class="title">万年历</h3>
+<div class="calendar-wrapper">
+    <div class="top">
+        <select name="year" id="year">
+            <option value="请选择年份" disabled="true">请选择年份</option>
+        </select>
+        <select name="month" id="month">
+            <option value="请选择月份" disabled>请选择月份</option>
+        </select>
+        <input type="submit" value="查询" class="query">
+    </div>
+    <table class="calendar-table">
+        <thead>
+            <tr class="week">
+                <td>日</td>
+                <td>一</td>
+                <td>二</td>
+                <td>三</td>
+                <td>四</td>
+                <td>五</td>
+                <td>六</td>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    const oYear = document.getElementById("year");
+    const oMonth = document.getElementById('month');
+    const oQuery = document.querySelector('.query');
+    const oTbody = document.querySelector('.tbody');
+    function each(arg,callback){
+        let start = arg.start,
+            end = arg.end;
+        for(let i = start; i <= end; i++){
+            callback(i)
+        }
+    }
+    // 设置万年历的起始年份为 1900, 终止年份为 2050
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    each({
+        start:1900,
+        end:2050
+    },function(i){
+        let oOption = document.createElement('option');
+        oOption.textContent = i;
+        oOption.value = i;
+        if(Number(oOption.value) === currentYear){
+            oOption.selected = true;
+        }
+        oYear.appendChild(oOption);
+    });
+
+    // 设置月份
+    each({
+        start:1,
+        end:12
+    },function(i){
+        let oOption = document.createElement('option');
+        oOption.textContent = i;
+        oOption.value = i - 1;
+        if( Number(oOption.value) === currentMonth ){
+            oOption.selected = true;
+        }
+        oMonth.appendChild(oOption);
+    });
+
+    function query(){
+        // 求出当前月份的 第一天 是星期几
+        oTbody.innerHTML = "";
+        const date = new Date(oYear.value,oMonth.value);
+        const days = getMonthDays(oYear.value,oMonth.value);
+        const firstDay = date.getDay();
+        const dateArray = new Array(days).fill(1).map((day,index) => {
+            return index+1;
+        });
+        if( firstDay !== 0 ){
+            let arr = new Array(firstDay).fill(0);
+            arr.forEach((date) => {
+                dateArray.unshift(date);
+            })
+        }
+        if( dateArray.length < 42 ){
+            let arr = new Array( 42 - dateArray.length ).fill(0);
+            arr.forEach((date) => {
+                dateArray.push(date);
+            })
+        }
+        for(let row = 0; row < 6; row++){
+            const oTr = document.createElement('tr');
+            for(let i = row * 7; i < (row+1)*7 ;i++){
+                const oTd = document.createElement('td');
+                if(dateArray[i] === 0){
+                    dateArray[i] = "";
+                }
+                oTd.textContent = dateArray[i];
+                oTr.appendChild(oTd);
+            }
+            oTbody.appendChild(oTr);
+        }
+    }
+    query();
+    oQuery.addEventListener('click',() => {
+        query();
+    },false);
+
+    // 求出选择当前年份的月份 有多少天
+    function getMonthDays(year,month){
+        let day = [31,28,31,30,31,30,31,31,30,31,30,31];
+        // 如果是闰年，则2月是29天
+        if( (year%100!==0 && year%4===0) || (year%100===0&&year%400===0) ){
+            day[1] = 29;
+        }
+        return day[month];
+    }
+
+    
+    const date1 = new Date(2020,3,23);
+    const date2 = new Date(2020,3,24);
+    console.log('date1:',date1)
+    console.log('date2:',date2);
+    console.log(date2.getTime() - date1.getTime());
+
+</script>
+</body>
+</html>
