@@ -1,4 +1,4 @@
-
+![demo](https://github.com/JayK0720/layout-and-animations/blob/master/demo-calendar/imgs/Mar-23-2020%2022-50-33.gif);
 # key
 
     1. 布局时 每个月的第一天 是星期几
@@ -8,5 +8,5 @@
     
     3. 日历的排布,每周7天, 至少要有 6 行，因为会出现 某个月有31 天,1号 是 星期五或者六,而剩下 30天,
     剩下的天数 至少需要5排才能排下去,如下图
-![bug]();
+![bug](https://github.com/JayK0720/layout-and-animations/blob/master/demo-calendar/imgs/demo.png);
     
