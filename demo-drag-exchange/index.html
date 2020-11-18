@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>拖拽</title>
+		<style>
+			html,body,ul,p{
+				padding: 0;
+				margin: 0;
+			}
+			ul,ol{
+				list-style:none;
+			}
+			body{
+				background-color:#f9f9f9;
+			}
+			.container{
+				position:relative;
+				width:700px;
+				margin:30px auto 0;
+				border:1px solid #e8e8e8;
+				background-color:#ffffff;
+				height:445px;
+			}
+			.container::after{
+				content:"";
+				display:block;
+				clear:both;
+			}
+			li{
+				margin-left:10px;
+				margin-top:10px;
+				float:left;
+				width:220px;
+				height:135px;
+				border-radius:8px;
+				cursor:pointer;
+			}
+			li>img{
+				display:block;
+				height:100%;
+				width:100%;
+				border-radius:8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<ul class="website-list">
+				<li><img src="./imgs/1.png" alt="1"></li>
+				<li><img src="./imgs/2.png" alt="2"></li>
+				<li><img src="./imgs/3.png" alt="3"></li>
+				<li><img src="./imgs/4.png" alt="4"></li>
+				<li><img src="./imgs/5.png" alt="5"></li>
+				<li><img src="./imgs/6.png" alt="6"></li>
+				<li><img src="./imgs/7.png" alt="7"></li>
+				<li><img src="./imgs/8.png" alt="8"></li>
+				<li><img src="./imgs/9.png" alt="9"></li>
+			</ul>
+		</div>
+		<script src='./js/index.js'></script>
+	</body>
+</html>
