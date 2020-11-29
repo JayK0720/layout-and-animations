@@ -15,7 +15,7 @@ oList.addEventListener('mousedown',drag,false);
 document.addEventListener('mousemove',drag,false);
 document.addEventListener('mouseup',drag,false);
 let flag = false;	// 判断是否点击了
-let startX,startY,x1,y1,element,gobal,isExit;
+let startX,startY,x1,y1,element,gobal;
 function drag(event){
 	event = event || window.event;
 	event.preventDefault();
@@ -38,7 +38,7 @@ function drag(event){
 			delY = y2 - oContainer.offsetTop;
 			for(let i = 0, length = aLi.length; i < length; i++){
 				aLi[i].style.transform = 'scale(1)';
-				if( element != aLi[i] &&
+ 				if( element != aLi[i] &&
 					(delX > aLi[i].offsetLeft) && (delX < aLi[i].offsetLeft+220) 
 					&& (delY > aLi[i].offsetTop) && (delY < aLi[i].offsetTop+135) 
 				){
@@ -58,8 +58,7 @@ function drag(event){
 							(delX > aLi[i].offsetLeft) && (delX < aLi[i].offsetLeft+220) 
 							&& (delY > aLi[i].offsetTop) && (delY < aLi[i].offsetTop+135) 
 						){
-							isExit = false;
-							return isExit;
+							return false;
 						}
 					}
 					return true;
@@ -71,13 +70,13 @@ function drag(event){
 					element.style.transition = 'all .3s';
 					gobal.style.left = startX + 'px';
 					gobal.style.top = startY + 'px';
-					gobal.style.transition = 'all .3s';
+					gobal.style.transition = 'all .2s';
 					gobal.style.transform = 'scale(1)';
 					gobal = null;
 				}else{
 					element.style.left = startX + 'px';
 					element.style.top = startY + 'px';
-					element.style.transition = 'all .3s';
+					element.style.transition = 'all .2s';
 					if(gobal){
 						gobal.style.transform = 'scale(1)';
 						gobal = null;

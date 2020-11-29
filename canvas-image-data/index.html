@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canvas像素操作</title>
+		<style>
+			html,body{padding: 0;margin: 0;}
+			.picker{width:150px;height:300px;border:1px solid #e8e8e8;display:inline-block;vertical-align:top;}
+			.scale{border:1px solid #e8e8e8;}
+		</style>
+	</head>
+	<body>
+		<p>
+			invert:<input type="radio" name='color' value='invert'>
+			grayscale: <input type="radio" name='color' value='grayscale'>
+		</p>
+		<canvas id="canvas" width='300' height='300'></canvas>
+		<canvas class="scale" width="200" height="200"></canvas>
+		<div class="picker"></div>
+		<!-- <script src='./js/index.js'></script> -->
+		<!-- <script src='./js/main.js'></script> -->
+		<script src='./js/scale.js'></script>	
+	</body>
+</html>
