@@ -24,6 +24,7 @@ function paddingLeftZero(str){
 	return ('00' + str).substring( (str+'').length )
 }
 
+const START_ANGLE = 270 * Math.PI/180
 function draw_time(){
 	ctx_1.clearRect(0,0,canvas_1.width,canvas_1.height);
 	// 绘制渐变
@@ -38,25 +39,36 @@ function draw_time(){
 	ctx_1.textAlign = 'center';
 	let date = format_date(new Date(),'yyyy-MM-dd');
 	let time = format_date(new Date(),'hh:mm:ss');
-	ctx_1.fillText(date,canvas_1.width/2,140);
+	ctx_1.fillText(date,canvas_1.width/2,124);
 	ctx_1.font = '20px serif';
-	ctx_1.fillText(time,canvas_1.width/2,165);
+	ctx_1.fillText(time,canvas_1.width/2,150);
 	const linear = ctx_1.createLinearGradient(0,0,canvas_1.width,0);
-	linear.addColorStop(0,'magenta');
+	linear.addColorStop(0,'red');
 	linear.addColorStop(0.5,'blue');
-	linear.addColorStop(1,'red');
+	linear.addColorStop(1,'pink');
 	ctx_1.font = '14px serif';
 	ctx_1.fillStyle = linear;
-	ctx_1.fillText('keep learning and coding',canvas_1.width/2,185);
+	ctx_1.fillText('keep learning and coding',canvas_1.width/2,170);
 	// 绘制圆弧
 	ctx_1.beginPath();
 	ctx_1.lineWidth = 12;
 	ctx_1.strokeStyle = '#00ffff';
 	let hour = new Date().getHours();
+	let minute = new Date().getMinutes();
+	let second = new Date().getSeconds();
+	let millecons = new Date().getMilliseconds();
 	// 24小时制,注意绘制的起点向后倒退90度,那么终点也要减去90度
-	ctx_1.arc(canvas_1.width/2,canvas_1.height/2,130,270*Math.PI/180,(hour*15-90)*Math.PI/180,false);
+	ctx_1.arc(canvas_1.width/2,canvas_1.height/2,138,START_ANGLE,(hour*30-90)*Math.PI/180,false);
 	ctx_1.stroke();
-	window.requestAnimationFrame(draw_time);
+	// 绘制分钟
+	ctx_1.beginPath();
+	ctx_1.arc(canvas_1.width/2,canvas_1.height/2,112,START_ANGLE,(minute*6-90)*Math.PI/180,false );
+	ctx_1.stroke();
+	// 绘制秒
+	ctx_1.beginPath();
+	ctx_1.arc(canvas_1.width/2,canvas_1.height/2,84,START_ANGLE,((second*1000+millecons)/1000*6-90)*Math.PI/180,false );
+	ctx_1.stroke();
+	window.requestAnimationFrame(draw_time)
 }
 draw_time();
 
